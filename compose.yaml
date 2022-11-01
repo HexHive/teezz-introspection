@@ -1,0 +1,14 @@
+services:
+  teezz-recorder:
+    image: teezz-recorder:latest
+    platform: linux
+    build:
+      context: .
+      target: recorder
+    privileged: true # needed for adb
+    volumes:
+      - ./in:/in
+      - ./out:/out
+      - ./src:/src
+      - ./docker/docker-entrypoint.sh:/docker-entrypoint.sh
+      - /dev/bus/usb:/dev/bus/usb

@@ -1,0 +1,10 @@
+{
+  "name" : "gatekeeper.msm8992.so",
+  "functions" : {
+    "enroll" : { "offset" : "0x0E50" },
+    "verify" : { "offset" : "0x11DC" },
+    "delete_user" : { "offset" : "0x0B00" },
+    "delete_all_users" : { "offset" : "0x0CAC" },
+    "close" : { "offset" : "0x14D0" }
+  }
+}

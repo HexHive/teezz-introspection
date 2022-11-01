@@ -1,0 +1,28 @@
+{
+  "name" : "libmediadrm.so",
+  "functions" : {
+    "openSession" : { "symbol" : "_ZN7android3Drm11openSessionERNS_6VectorIhEE" },
+    "closeSession" : { "symbol" : "_ZN7android3Drm12closeSessionERKNS_6VectorIhEE" },
+    "getKeyRequest" : { "symbol" : "_ZN7android3Drm13getKeyRequestERKNS_6VectorIhEES4_RKNS_7String8ENS_9DrmPlugin7KeyTypeERKNS_11KeyedVectorIS5_S5_EERS2_RS5_PNS8_14KeyRequestTypeE" },
+    "provideKeyResponse" : { "symbol" : "_ZN7android3Drm18provideKeyResponseERKNS_6VectorIhEES4_RS2_" },
+    "removeKeys" : { "symbol" : "_ZN7android3Drm10removeKeysERKNS_6VectorIhEE" },
+    "restoreKeys" : { "symbol" : "_ZN7android3Drm11restoreKeysERKNS_6VectorIhEES4_" },
+    "queryKeyStatus" : { "symbol" : "_ZNK7android3Drm14queryKeyStatusERKNS_6VectorIhEERNS_11KeyedVectorINS_7String8ES6_EE" },
+    "getProvisionRequest" : { "symbol" : "_ZN7android3Drm19getProvisionRequestERKNS_7String8ES3_RNS_6VectorIhEERS1_" },
+    "provideProvisionResponse" : { "symbol" : "_ZN7android3Drm24provideProvisionResponseERKNS_6VectorIhEERS2_S5_" },
+    "getSecureStops" : { "symbol" : "_ZN7android3Drm14getSecureStopsERNS_4ListINS_6VectorIhEEEE" },
+    "getSecureStop" : { "symbol" : "_ZN7android3Drm13getSecureStopERKNS_6VectorIhEERS2_" },
+    "releaseSecureStops" : { "symbol" : "_ZN7android3Drm18releaseSecureStopsERKNS_6VectorIhEE" },
+    "releaseAllSecureStops" : { "symbol" : "_ZN7android3Drm21releaseAllSecureStopsEv" },
+    "getPropertyString" : { "symbol" : "_ZNK7android3Drm17getPropertyStringERKNS_7String8ERS1_" },
+    "getPropertyByteArray" : { "symbol" : "_ZNK7android3Drm20getPropertyByteArrayERKNS_7String8ERNS_6VectorIhEE" },
+    "setPropertyString" : { "symbol" : "_ZNK7android3Drm17setPropertyStringERKNS_7String8ES3_" },
+    "setPropertyByteArray" : { "symbol" : "_ZNK7android3Drm20setPropertyByteArrayERKNS_7String8ERKNS_6VectorIhEE" },
+    "setCipherAlgorithm" : { "symbol" : "_ZN7android3Drm18setCipherAlgorithmERKNS_6VectorIhEERKNS_7String8E" },
+    "setMacAlgorithm" : { "symbol" : "_ZN7android3Drm15setMacAlgorithmERKNS_6VectorIhEERKNS_7String8E" },
+    "encrypt" : { "symbol" : "_ZN7android3Drm7encryptERKNS_6VectorIhEES4_S4_S4_RS2_" },
+    "decrypt" : { "symbol" : "_ZN7android3Drm7decryptERKNS_6VectorIhEES4_S4_S4_RS2_" },
+    "sign" : { "symbol" : "_ZN7android3Drm7signRSAERKNS_6VectorIhEERKNS_7String8ES4_S4_RS2_" },
+    "verify" : { "symbol" : "_ZN7android3Drm6verifyERKNS_6VectorIhEES4_S4_S4_Rb" },
+    "signRSA" : { "symbol" : "_ZN7android3Drm7signRSAERKNS_6VectorIhEERKNS_7String8ES4_S4_RS2_" }
+}
