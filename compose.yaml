@@ -11,4 +11,5 @@ services:
       - ./out:/out
       - ./src:/src
       - ./docker/docker-entrypoint.sh:/docker-entrypoint.sh
+      - ./teezz-ca-driver:/teezz-ca-driver
       - /dev/bus/usb:/dev/bus/usb
