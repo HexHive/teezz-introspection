@@ -16,11 +16,11 @@ all: $(COBJS) $(CPPOBJS)
 
 $(COBJS):%: %.c %.h
 	$(CC) -ggdb -o $@.bin $^
-	python3 funcsyms2json.py $@.bin | python -m json.tool > $@.json
+	python3 funcsyms2json.py $@.bin | python3 -m json.tool > $@.json
 
 $(CPPOBJS):%: %.cpp %.hpp
 	$(CXX) -ggdb -o $@.bin $^
-	python3 funcsyms2json.py $@.bin | python -m json.tool > $@.json
+	python3 funcsyms2json.py $@.bin | python3 -m json.tool > $@.json
 
 clean:
 	$(RM) c/*.bin c/*.json cpp/*.bin cpp/*.json

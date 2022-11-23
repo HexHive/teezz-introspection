@@ -5,7 +5,7 @@ from pprint import pprint
 import frida
 import time
 from generator import config
-import frida_haldump as fhd
+import haldump.dump as fhd
 import logging
 
 # test-global log configuration
@@ -44,7 +44,7 @@ class TestBaseParamIntrospection(unittest.TestCase):
         """Start geninterceptor and return java script code."""
 
         interceptor_args = [
-            "python",
+            "python3",
             "-m",
             "generator.geninterceptor",
             f"./generator/tests/data/{base_name}.json",
@@ -62,7 +62,7 @@ class TestBaseParamIntrospection(unittest.TestCase):
         env = os.environ.copy()
         env["LD_LIBRARY_PATH"] = "."
         dumper_args = [
-            "python",
+            "python3",
             "-m",
             "generator.gendumper",
             f"{hal_name}",
