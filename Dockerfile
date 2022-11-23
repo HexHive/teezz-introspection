@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:latest
-ARG VERSION=jammy
+ARG VERSION=bionic
 
 FROM ubuntu:$VERSION as recorder
 
@@ -20,11 +20,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         git \
         python3-minimal \
         python3-pip \
-        python3-ipdb \
-        python3-ipython \
         python3-venv \
-        python3.10-dev \
-        python3-clang-14 \
+        python3-dev \
+        python3-setuptools \
+        python3-clang-10 \
         android-tools-adb \
         android-tools-fastboot \
         wget
@@ -33,4 +32,4 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 WORKDIR /src
 RUN --mount=type=bind,source=src,target=/src \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-        pip install -r requirements.txt
+        pip3 install -r requirements.txt
