@@ -35,7 +35,10 @@ Make sure that you are telling clang that you want to use `h` files as `hpp`.
 ### Unit not found in TU or Non helpful crash log
 Try running `clang -cc1 -ast-dump $target $args` and check the output. If clang gives some errors you have a clue of what's not working 
 ### Static assertion failed for flex 
-Try rebuilding the flex module:
+If you have an error like the following : 
+`system/tools/aidl/aidl_language_l.ll" flex-2.5.39: loadlocale.c:130: _nl_intern_locale_data: Assertion `cnt < (sizeof (_nl_value_type_LC_TIME) / sizeof (_nl_value_type_LC_TIME[0]))' failed . Aborted`
+Try adding to your enviroment: `export LC_ALL=C`.
+If it doesn't solve try rebuilding the flex module:
 ```bash
 cd prebuilts/misc/linux-x86/flex/
 tar zxf flex-2.5.39.tar.gz
