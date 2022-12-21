@@ -7,8 +7,8 @@ services:
       target: recorder
     privileged: true # needed for adb
     volumes:
-      - ./in:/in
-      - ./out:/out
+      - /tmp/teezz-intro-workdir:/root/workdir
+      - ./targets/taimen:/target
       - ./src:/src
       - ./docker/docker-entrypoint.sh:/docker-entrypoint.sh
       - ./teezz-ca-driver:/teezz-ca-driver

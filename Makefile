@@ -14,6 +14,9 @@ help: ## Show this help
 build: Dockerfile compose.yaml ## Build the Docker container(s)
 	@$(DOCKER) compose build
 
+run: ## Run the Docker container
+	@$(DOCKER) compose run --rm --env DEVICE=$(DEVICE) teezz-recorder /docker-entrypoint.sh
+
 run-sh: ## Run the Docker container(s) and spawn a shell
 	@$(DOCKER) compose run --rm --env DEVICE=$(DEVICE) teezz-recorder "/bin/bash"
 
