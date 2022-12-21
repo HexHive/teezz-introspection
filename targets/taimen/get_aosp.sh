@@ -11,13 +11,12 @@ cd -
 
 mkdir -p hardware && cd hardware
 $GIT_CMD https://android.googlesource.com/platform/hardware/libhardware
+$GIT_CMD https://android.googlesource.com/platform/hardware/interfaces
 cd -
 
 mkdir -p external && cd external
 $GIT_CMD https://android.googlesource.com/platform/external/clang
-mkdir optee && cd optee
-$GIT_CMD https://android.googlesource.com/platform/external/optee/apps
-cd ../../
+cd ../
 
 $GIT_CMD https://android.googlesource.com/platform/bionic
 
