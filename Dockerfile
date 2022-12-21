@@ -28,8 +28,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         android-tools-fastboot \
         wget
 
-
 WORKDIR /src
 RUN --mount=type=bind,source=src,target=/src \
     --mount=type=cache,target=/root/.cache/pip,sharing=locked \
         pip3 install -r requirements.txt
+
+COPY docker/frida-server-14.2.7-android-arm64 /root/frida-server
