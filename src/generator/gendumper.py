@@ -72,8 +72,8 @@ def parse(tu_path, clang_args):
         should_terminate = False
         for d in diagnostics:
             log.warn(d)
-            #if d.severity >= Diagnostic.Error:
-            #    should_terminate = True
+            if d.severity >= Diagnostic.Error:
+                should_terminate = True
         if should_terminate:
             import ipdb
 
