@@ -7,16 +7,18 @@ mkdir -p system && cd system
 $GIT_CMD https://android.googlesource.com/platform/system/core
 $GIT_CMD https://android.googlesource.com/platform/system/libhidl
 $GIT_CMD https://android.googlesource.com/platform/system/libfmq
+$GIT_CMD https://android.googlesource.com/platform/system/keymaster
 cd -
 
 mkdir -p hardware && cd hardware
 $GIT_CMD https://android.googlesource.com/platform/hardware/libhardware
+$GIT_CMD https://android.googlesource.com/platform/hardware/interfaces
 cd -
 
 mkdir -p external && cd external
 $GIT_CMD https://android.googlesource.com/platform/external/clang
 mkdir optee && cd optee
-$GIT_CMD https://android.googlesource.com/platform/external/optee/apps
+git clone https://android.googlesource.com/platform/external/optee/apps -b "upstream-master"
 cd ../../
 
 $GIT_CMD https://android.googlesource.com/platform/bionic

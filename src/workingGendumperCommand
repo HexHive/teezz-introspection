@@ -1,2 +1,0 @@
- python3.8 -m generator.gendumper 'KeymasterDevice' /in/targets/hikey620/aosp/out_dir/KeymasterDevice.hpp -I/in/targets/hikey620/aosp/out_dir/ -I/in/targets/hikey620/aosp/system/libhidl/base/include/  -I/in/targets/hikey620/aosp/system/core/libcutils/include/  -I/in/targets/hikey620/aosp/system/core/libutils/include/  -I/in/targets/hikey620/aosp/system/libfmq/base/ -std=c++17  > newDump.js
-

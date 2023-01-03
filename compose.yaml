@@ -9,6 +9,7 @@ services:
     volumes:
       - /tmp/teezz-intro-workdir:/root/workdir
       - ./targets/taimen:/target
+      - ./targets/:/targets
       - ./src:/src
       - ./docker/docker-entrypoint.sh:/docker-entrypoint.sh
       - ./teezz-ca-driver:/teezz-ca-driver
