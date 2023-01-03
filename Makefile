@@ -39,11 +39,3 @@ compile-js:
 
 dualrecord:
 	python -m dualrecorder ./dualrecorder/generated/explore.js $(CA)
-
-setup: ## Download AOSP for given device
-	cd targets/$(DEVICE_NAME)/ && ./get_aosp.sh
-generate_interfaces:
-	cd targets/$(DEVICE_NAME)/aosp && \
-	prebuilts/build-tools/linux-x86/bin/hidl-gen -o ../generated_interfaces -L c++-headers -randroid.hardware:hardware/interfaces -randroid.hidl:system/libhidl/transport android.hardware.keymaster@3.0 && \
-	prebuilts/build-tools/linux-x86/bin/hidl-gen -o ../generated_interfaces -L c++-headers -randroid.hardware:hardware/interfaces -randroid.hidl:system/libhidl/transport android.hidl.base@1.0 && \
-	prebuilts/build-tools/linux-x86/bin/hidl-gen -o ../generated_interfaces -L c++-headers -randroid.hardware:hardware/interfaces -randroid.hidl:system/libhidl/transport android.hidl.manager@1.0
