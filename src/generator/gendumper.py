@@ -2,6 +2,7 @@
 import sys
 import logging
 import jsbeautifier
+import os
 from collections import OrderedDict
 from .functiondumper import FunctionDumper, CB_FUNCTIONS
 
@@ -164,5 +165,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         usage()
         sys.exit(0)
-
+    if not os.path.isfile(sys.argv[2]):
+        print(f"File {sys.argv[2]} not found");
+        exit();
     main(sys.argv[1], sys.argv[2], sys.argv[3:])
