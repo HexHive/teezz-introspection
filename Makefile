@@ -15,6 +15,9 @@ help: ## Show this help
 build: Dockerfile compose.yaml ## Build the Docker container(s)
 	@$(DOCKER) compose build
 
+run: ## Run the Docker container
+	@$(DOCKER) compose run --rm --env DEVICE=$(DEVICE) teezz-recorder /docker-entrypoint.sh
+
 run-sh: ## Run the Docker container(s) and spawn a shell
 	@$(DOCKER) compose run --rm --env DEVICE=$(DEVICE) teezz-recorder "/bin/bash"
 
@@ -28,13 +31,3 @@ test_cpp:
 
 setup-dualrecord:
 	npm install frida-compile
-
-compile-js:
-	#rm -f $(DIR)/dualrecorder/generated/explore.js
-	#rmdir $(DIR)/dualrecorder/generated
-	node node_modules/frida-compile/bin/compile.js -o dualrecorder/generated/explore.js dualrecorder/dual.js
-
-dualrecord:
-	python -m dualrecorder ./dualrecorder/generated/explore.js $(CA)
-setup: ## Download AOSP for given device
-	cd /targets/$(DEVICE_NAME)/ && ./get_aosp.sh
