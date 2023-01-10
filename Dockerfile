@@ -27,7 +27,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         python3-clang-10 \
         android-tools-adb \
         android-tools-fastboot \
-        wget
+        wget \
+        npm
 
 WORKDIR /src
 RUN --mount=type=bind,source=src,target=/src \
