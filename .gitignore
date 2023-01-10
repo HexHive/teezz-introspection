@@ -260,3 +260,20 @@ poetry.toml
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,c++,c
+# Ignore all data folders generated from tools
+data/
+data/*
+#Ignore aosp folders
+aosp/
+aosp/*
+#Ignore interfaces generated from tools
+generated_interfaces/
+generated_interfaces/*
+#Ignore generated js files
+generated/
+generated/*
+#Ignore node_modules
+node_modules/
+node_modules/*
+
+

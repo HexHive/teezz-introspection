@@ -2,6 +2,7 @@
 
 TAG="android-9.0.0_r34"
 GIT_CMD="git clone --depth 1 --branch $TAG"
+mkdir -p aosp && cd aosp
 
 mkdir -p system && cd system
 $GIT_CMD https://android.googlesource.com/platform/system/core
