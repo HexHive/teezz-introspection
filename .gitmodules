@@ -1,0 +1,6 @@
+[submodule "teezz-ca-driver"]
+	path = teezz-ca-driver
+	url = git@github.com:HexHive/teezz-ca-driver.git
+[submodule "src/adb"]
+	path = src/adb
+	url = git@github.com:HexHive/teezz-adb.git

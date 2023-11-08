@@ -1,0 +1,4 @@
+aosp/
+*.hpp
+libclang-7.so
+generated/

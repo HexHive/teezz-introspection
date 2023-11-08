@@ -1,0 +1,16 @@
+{
+  "name" : "fingerprint.bullhead.so",
+  "functions" : {
+    "close" : { "offset" : "0x30B8" },
+    "remove" : { "offset" : "0x337C" },
+    "enroll" : { "offset" : "0x3168" },
+    "set_notify" : { "offset" : "0x3484" },
+    "cancel" : { "offset" : "0x32AC" },
+    "authenticate" : { "offset" : "0x3508" },
+    "pre_enroll" : { "offset" : "0x3608" },
+    "enumerate" : { "offset" : "0x3718" },
+    "get_authenticator_id" : { "offset" : "0x374C" },
+    "set_active_group" : { "offset" : "0x37A4" },
+    "post_enroll" : { "offset" : "0x3950" }
+  }
+}

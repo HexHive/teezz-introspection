@@ -1,0 +1,9 @@
+{
+  "name" : "gatekeeper.hi6250.so",
+  "functions" : {
+    "close" :  { "offset" : "0x0BC0" },
+    "enroll" : { "offset" : "0x0E10" },
+    "verify" : { "offset" : "0x0C14" } 
+  }
+}
+

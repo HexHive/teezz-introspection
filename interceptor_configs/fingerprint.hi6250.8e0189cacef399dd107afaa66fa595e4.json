@@ -1,0 +1,16 @@
+{
+  "name" : "fingerprint.hi6250.so",
+  "functions" : {
+    "set_notify" : { "offset" : "0x7288" },
+    "pre_enroll" : { "offset" : "0x748C" },
+    "enroll" : { "offset" : "0x5DCC" },
+    "post_enroll" : { "offset" : "0x73C8" },
+    "get_authenticator_id" : { "offset" : "0x5F04" },
+    "cancel" : { "offset" : "0x7334" },
+    "enumerate" : { "offset" : "0x6174" },
+    "remove" : { "offset" : "0x6468" },
+    "set_active_group" : { "offset" : "0x6878" },
+    "authenticate" : { "offset" : "0x7184" },
+    "close" : { "offset" : "0x0A0C8" }
+  }
+}

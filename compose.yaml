@@ -1,0 +1,25 @@
+services:
+  teezz-recorder:
+    image: teezz-recorder:latest
+    platform: linux
+    environment:
+      TEE: ${TEE}
+      CA: ${CA}
+      TA: ${TA}
+      CLI_TESTS: ${CLI_TESTS}
+    build:
+      context: .
+      target: recorder
+    privileged: true # needed for adb
+    volumes:
+      - /tmp/teezz/${PLATFORM}/${TA}:/root/workdir # in/out dir
+      - ./src:/src
+      - ./docker/.android:/root/.android
+      - ./docker/frida-server-14.2.7-android-arm64:/root/frida-server
+      - ./targets/${PLATFORM}/${TA}:/target
+      - ./interceptor_configs:/interceptor_configs
+      - ./docker/docker-entrypoint.sh:/docker-entrypoint.sh
+      - ./docker/mutatorgen-entrypoint.sh:/mutatorgen-entrypoint.sh
+      - ./docker/test-entrypoint.sh:/test-entrypoint.sh
+      - ./teezz-ca-driver:/teezz-ca-driver
+      - /dev/bus/usb:/dev/bus/usb
