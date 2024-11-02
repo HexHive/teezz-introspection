@@ -1,4 +1,6 @@
 var ioctl = Module.findExportByName(null, "ioctl");
+var mmap = Module.findExportByName("libc.so", "mmap");
+
 
 var OPTEE_MAGIC = 0xa4;
 var PTR_SZ = 8;
@@ -18,6 +20,7 @@ var __u64 = 8;
  * If this data type changes, the command changes too.
  * This is why we need to spcify the sizes first.
  */
+var TEE_IOC_SHM_ALLOC = 0xc010a401;
 var TEE_IOC_OPEN_SESSION = 0x8010a402;
 var TEE_IOC_INVOKE = 0x8010a403;
 var TEE_IOC_CLOSE_SESSION = 0x8004a405;
@@ -27,6 +30,7 @@ var TEE_IOC_SHM_REGISTER = 0xc018a409;
 
 // convenience dictionary to map cmd ids (int) to strings
 var CMD2LABEL = {};
+CMD2LABEL[TEE_IOC_SHM_ALLOC] = "TEE_IOC_SHM_ALLOC";
 CMD2LABEL[TEE_IOC_OPEN_SESSION] = "TEE_IOC_OPEN_SESSION";
 CMD2LABEL[TEE_IOC_INVOKE] = "TEE_IOC_INVOKE";
 CMD2LABEL[TEE_IOC_CLOSE_SESSION] = "TEE_IOC_CLOSE_SESSION";
@@ -58,7 +62,11 @@ TYPE2LABEL[TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT] = "TEE_IOCTL_PARAM_ATTR_TYPE_
 // dictionary of currently TEE-registered shared memory regions
 // we use the shared memory identifier as a key to reference a dictionary
 // holding { "addr": addr, "length": length, "flags": flags, "fd": retval };
-var SHMS = {}
+var SHMS = {};
+
+// not yet mapped shm, index to ALLOCS is the fd
+// move allocs to SHMS once they're mapped
+var ALLOCS = {};
 
 function get_struct_size(cmd) {
   return (cmd & 0x00ff0000) >> 16;
@@ -113,9 +121,9 @@ function dump_tee_ioctl_invoke_arg(tee_ioctl_buf_data, size, is_on_enter) {
   var num_params = Memory.readU32(tee_ioctl_invoke_arg.add(20), 4);
   var params_ptr = tee_ioctl_invoke_arg.add(24);
 
-  //console.log("func: " + func);
-  //console.log("session: " + session_id);
-  //console.log("num_params: " + num_params);
+  console.log("func: " + func);
+  console.log("session: " + session_id);
+  console.log("num_params: " + num_params);
 
   var params = {}
   for (var i = 0; i < 4; i++) {
@@ -135,6 +143,7 @@ function dump_tee_ioctl_invoke_arg(tee_ioctl_buf_data, size, is_on_enter) {
 
     var hd = hexdump(param_ptr,
       { length: 4 * PTR_SZ, header: true, ansi: true });
+
     console.log(hd);
 
     switch (param_type) {
@@ -165,10 +174,10 @@ function dump_tee_ioctl_invoke_arg(tee_ioctl_buf_data, size, is_on_enter) {
       case TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT:
       case TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT:
         console.log("MEMREF dump_id " + DUMP_ID + " param no " + i + " memref " + TYPE2LABEL[param_type]);
-        //if(0 != params[i]["param_c"].and(uint64(0xffff000000000000)).compare(uint64(0))){
-        //    console.log("kernel address! (" + params[i]["param_c"].toString(16) + ")")
-        //    break;
-        //}
+        if(0 != params[i]["param_c"].and(uint64(0xffff000000000000)).compare(uint64(0))){
+            console.log("kernel address! (" + params[i]["param_c"].toString(16) + ")")
+            break;
+        }
 
         // get offset
         var offset = 0;
@@ -200,9 +209,9 @@ function dump_tee_ioctl_invoke_arg(tee_ioctl_buf_data, size, is_on_enter) {
         }
 
         if (SHMS[shm_id]) {
-          //console.log(Object.keys(SHMS));
+          console.log(Object.keys(SHMS));
           var addr = ptr(SHMS[shm_id]["addr"]);
-          //console.log("shm_id " + shm_id + ": Reading from " + addr + " at offset " + offset + " with sz " + buf_sz);
+          console.log("shm_id " + shm_id + ": Reading from " + addr + " at offset " + offset + " with sz " + buf_sz);
           params[i]["param_data"] = Memory.readByteArray(addr.add(offset), buf_sz);
           //var hd = hexdump(addr.add(offset),
           //  { length: buf_sz, header : true, ansi : true });
@@ -250,6 +259,38 @@ function handle_tee_ioctl_shm_register(tee_ioctl_shm_register_data, retval) {
   return;
 }
 
+function handle_tee_ioctl_shm_alloc(tee_ioctl_shm_alloc, retval) {
+   /**
+    * struct tee_ioctl_shm_alloc_data - Shared memory allocate argument
+    * @size:	[in/out] Size of shared memory to allocate
+    * @flags:	[in/out] Flags to/from allocation.
+    * @id:	[out] Identifier of the shared memory
+    *
+    * The flags field should currently be zero as input. Updated by the call
+    * with actual flags as defined by TEE_IOCTL_SHM_* above.
+    * This structure is used as argument for TEE_IOC_SHM_ALLOC below.
+    */
+
+    /*
+    struct tee_ioctl_shm_alloc_data {
+    	__u64 size;
+    	__u32 flags;
+    	__s32 id;
+    };
+    */
+  if (retval >= 0) {
+    // retval is the file descriptor
+    var length = Memory.readU64(tee_ioctl_shm_alloc);
+    var flags = Memory.readU32(tee_ioctl_shm_alloc.add(8));
+    var id = Memory.readU32(tee_ioctl_shm_alloc.add(12));
+    console.log("Adding fd " + retval + " identified by id " + id + " of length " + length + " to ALLOCS");
+    ALLOCS[retval] = { "length": length, "flags": flags, "id": id};
+  } else {
+    console.log("tee_ioctl_shm_register failed with status code: " + retval);
+  }
+  return;
+}
+
 
 Interceptor.attach(ioctl, {
   onEnter: function (args) {
@@ -263,17 +304,18 @@ Interceptor.attach(ioctl, {
       if (is_optee(this.request)) {
         // print the ioctl request label
         if (CMD2LABEL[this.request] == undefined) {
-          console.log(this.request);
+          console.log(this.request.toString(16));
         }
-        else
+        else {
           console.log(CMD2LABEL[this.request]);
+	}
+      	console.log("ioctl called from:\n" +
+               Thread.backtrace(this.context, Backtracer.ACCURATE)
+               .map(DebugSymbol.fromAddress).join("\n") + "\n");
       }
     }
 
     if (this.request == TEE_IOC_INVOKE) {
-      //console.log("ioctl called from:\n" +
-      //         Thread.backtrace(this.context, Backtracer.ACCURATE)
-      //         .map(DebugSymbol.fromAddress).join("\n") + "\n");
       this.argp = ptr(args[2])
 
       this.size = get_struct_size(this.request);
@@ -284,6 +326,10 @@ Interceptor.attach(ioctl, {
         "dump_id": DUMP_ID
       })
       dump_tee_ioctl_invoke_arg(this.argp, this.size, true);
+    } else if (this.request == TEE_IOC_SHM_ALLOC) {
+      console.log("Allocating shared memory");
+      this.argp = ptr(args[2]);
+      this.size = get_struct_size(this.request);
     } else if (this.request == TEE_IOC_SHM_REGISTER) {
       /*
        * We are primarily interested in recording data sent via
@@ -298,7 +344,7 @@ Interceptor.attach(ioctl, {
        * shared memory regions.
        */
       console.log("Registering shared memory");
-      this.argp = ptr(args[2])
+      this.argp = ptr(args[2]);
       this.size = get_struct_size(this.request);
     } else {
       console.log("Not handling cmd " + this.request.toString(16));
@@ -319,6 +365,8 @@ Interceptor.attach(ioctl, {
       dump_tee_ioctl_invoke_arg(this.argp, this.size, false);
       send({ "type": "done", "dump_id": DUMP_ID });
       DUMP_ID += 1;
+    } else if (this.request == TEE_IOC_SHM_ALLOC) {
+      handle_tee_ioctl_shm_alloc(this.argp, retval);
     } else if (this.request == TEE_IOC_SHM_REGISTER) {
       handle_tee_ioctl_shm_register(this.argp, retval);
     } else {
@@ -330,3 +378,29 @@ Interceptor.attach(ioctl, {
     }
   }
 });
+
+Interceptor.attach(mmap, {
+    onEnter: function (args) {
+        var addr = args[0];
+        this.len = args[1];
+        var prot = args[2];
+        var flags = args[3];
+        this.mmapFD = args[4];
+        var offset = args[5];
+        console.log('mmap(' + addr + ', ' + this.len + ', ' + prot + ', ' + flags + ', ' + this.mmapFD + ', ' + offset + ')');
+    },
+    onLeave: function (ret) {
+        // remember the mmap mapping of the filedescriptor to a virtual address
+        console.log('\tret: ' + ret);
+        if (parseInt(ret) > 0) {
+            // force javascript to copy the string object
+            console.log("Mapped fd " + parseInt(this.mmapFD) + " to addr: " + ptr(ret) + "\n");
+	    var addr = ret;
+	    var id = ALLOCS[this.mmapFD]["id"];
+	    var length = ALLOCS[this.mmapFD]["length"];
+	    var flags = ALLOCS[this.mmapFD]["flags"];
+	    SHMS[id] = { "addr": ptr(addr), "length": length, "flags": flags };
+        }
+    }
+});
+

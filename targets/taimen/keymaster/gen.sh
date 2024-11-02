@@ -6,7 +6,7 @@ set -ue
 
 mkdir -p $TARGET_DIR
 
-PYTHONPATH=/src python3 -m generator.gendumper \
+PYTHONPATH=/src python3 -m generator \
     "AKeymasterDevice" \
     $TARGET_DIR/hardware/interfaces/keymaster/3.0/android.hardware.keymaster@3.0-adapter-helper_genc++_headers/gen/android/hardware/keymaster/3.0/AKeymasterDevice.h \
     -I$TARGET_DIR/hardware/interfaces/keymaster/3.0/android.hardware.keymaster@3.0_genc++_headers/gen \

@@ -84,7 +84,7 @@ def get_fptr_code_offset(func_name, func_offset):
     out = "var {}{} = ptr(module_base + {});\n".format(
         FPTR_PREFIX, func_name, func_offset
     )
-    out += "var {}{}__hidl_cb = null;\n".format(FPTR_PREFIX, func_name)
+    out += "var {}{}_cb__hidl_cb = null;\n".format(FPTR_PREFIX, func_name)
     return out
 
 

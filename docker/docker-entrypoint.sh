@@ -56,7 +56,6 @@ fi
 # * custom clients (no system service we can attach to, use LD_PRELOAD to have it generic)
 
 # run recorder (can be configured for only HAL, only ioctl, and both)
-
 PYTHONPATH=/src python3 -m autorecord --mode both \
                 /teezz-ca-driver/$CLI_TESTS \
                 $DEVICE $TEE $CA /root/workdir/dualrec

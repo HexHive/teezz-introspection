@@ -63,7 +63,7 @@ def fridaserver(device_id: str):
 
 
 def ioctl_record(tee: str, ca: str, out_dir: str) -> Type[subprocess.Popen]:
-    cmd = ["python3", "-m", "fridadumper", tee, ca, out_dir],
+    cmd = ["python3", "-m", "fridadumper", tee, ca, out_dir]
     log.debug(f"cmd is {' '.join(cmd)}")
     p = subprocess.Popen(
         cmd,

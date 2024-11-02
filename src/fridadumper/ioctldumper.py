@@ -53,7 +53,7 @@ def mkdir_p(path):
             raise
 
 
-def store_recording(dump, seqid, procdir, high_lvl_id):
+def store_recording(dump, seqid, procdir, high_lvl_id=0):
 
     transaction_dir = os.path.join(procdir, str(seqid), str(high_lvl_id))
     if not os.path.isdir(transaction_dir):
@@ -108,7 +108,7 @@ def handle_dump_q(q: Queue, ca: str, out_dir: str):
         elif elem == DumperCmd.QUIT:
             return
 
-        store_recording(elem, sequence_id, process_dir)
+        store_recording(elem, sequence_id, process_dir, 0)
 
 
 def on_message(msg, data):

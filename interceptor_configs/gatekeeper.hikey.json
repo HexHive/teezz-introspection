@@ -1,0 +1,9 @@
+{
+  "name" : "android.hardware.gatekeeper@1.0-service.optee",
+  "functions" : {
+    "enroll" : { "offset" : "0x1ef0" },
+    "verify" : { "offset" : "0x21d8" },
+    "deleteUser" : { "offset" : "0x24a0" },
+    "deleteAllUsers" : { "offset" : "0x2538" }
+  }
+}
