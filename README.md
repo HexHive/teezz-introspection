@@ -98,3 +98,151 @@ root@9ef77accf8f4:/src# tree /tmp/out
             |       `-- resp
 [...]
 ```
+
+## Record HAL Interactions
+
+Spawn the docker container using one of the `docker/envs/*.env` files.
+There's a `Makefile` target that just drops you into a properly `env`ed shell.
+
+```
+# Pixel 2XL (taimen) targeting the keymaster CA as an example
+make run-sh ENV_FILE=./docker/envs/taimen-km.env
+```
+
+Download the required AOSP components.
+
+```
+mkdir -p /root/workdir/aosp
+cd /root/workdir/aosp
+/target/get_aosp.sh
+```
+
+Generate the HAL DBII recorder.
+
+```
+cd /root/workdir
+/target/gen.sh
+```
+
+While the `frida-server` is running on the device, inject the recording hooks
+into your target process:
+```
+PYTHONPATH=/src python3 -m haldump ./recorder.js $CA /tmp/out
+```
+
+The above command is tageting the `android.hardware.keymaster@3.0-service-qti`
+service on a Pixel 2XL running the `qsee` TEE. Once the hooks are installed,
+trigger some logic that makes `android.hardware.keymaster@3.0-service-qti`
+interact with the TEE similar to above when recording from the `ioctl` interface.
+Enter `s` and hit the Enter key to save the recording,
+and enter `q` and hit the Enter key to terminate the recorder.
+
+You should find the `onenter` and `onleave` recordings of the HAL in your
+`out/` directory now. This is the sequence generated when unlocking the phone
+using a pattern:
+```
+root@51948070a8ea:~/workdir# tree /tmp/out/android.hardware.keymaster\@3.0-service-qti/
+/tmp/out/android.hardware.keymaster@3.0-service-qti/
+`-- 0
+    |-- 0
+    |   `-- getKeyCharacteristics_cb_1
+    |       |-- onenter
+    |       |   |-- error
+    |       |   `-- keyCharacteristics
+    |       `-- onleave
+    |-- 1
+    |   `-- getKeyCharacteristics_0
+    |       |-- onenter
+    |       |   |-- _hidl_cb
+    |       |   |-- appData
+    |       |   |-- clientId
+    |       |   `-- keyBlob
+    |       `-- onleave
+    |           |-- _hidl_cb
+    |           |-- appData
+    |           |-- clientId
+    |           |-- keyBlob
+    |           `-- ret
+    |-- 2
+    |   `-- getKeyCharacteristics_cb_3
+    |       |-- onenter
+    |       |   |-- error
+    |       |   `-- keyCharacteristics
+    |       `-- onleave
+    |-- 3
+    |   `-- getKeyCharacteristics_2
+    |       |-- onenter
+    |       |   |-- _hidl_cb
+    |       |   |-- appData
+    |       |   |-- clientId
+    |       |   `-- keyBlob
+    |       `-- onleave
+    |           |-- _hidl_cb
+    |           |-- appData
+    |           |-- clientId
+    |           |-- keyBlob
+    |           `-- ret
+    |-- 4
+    |   `-- begin_cb_5
+    |       |-- onenter
+    |       |   |-- error
+    |       |   |-- operationHandle
+    |       |   `-- outParams
+    |       `-- onleave
+    |-- 5
+    |   `-- begin_4
+    |       |-- onenter
+    |       |   |-- _hidl_cb
+    |       |   |-- inParams
+    |       |   |-- key
+    |       |   `-- purpose
+    |       `-- onleave
+    |           |-- _hidl_cb
+    |           |-- inParams
+    |           |-- key
+    |           |-- purpose
+    |           `-- ret
+    |-- 6
+    |   `-- update_cb_7
+    |       |-- onenter
+    |       |   |-- error
+    |       |   |-- inputConsumed
+    |       |   |-- outParams
+    |       |   `-- output
+    |       `-- onleave
+    |-- 7
+    |   `-- update_6
+    |       |-- onenter
+    |       |   |-- _hidl_cb
+    |       |   |-- inParams
+    |       |   |-- input
+    |       |   `-- operationHandle
+    |       `-- onleave
+    |           |-- _hidl_cb
+    |           |-- inParams
+    |           |-- input
+    |           |-- operationHandle
+    |           `-- ret
+    |-- 8
+    |   `-- finish_cb_9
+    |       |-- onenter
+    |       |   |-- error
+    |       |   |-- outParams
+    |       |   `-- output
+    |       `-- onleave
+    `-- 9
+        `-- finish_8
+            |-- onenter
+            |   |-- _hidl_cb
+            |   |-- inParams
+            |   |-- input
+            |   |-- operationHandle
+            |   `-- signature
+            `-- onleave
+                |-- _hidl_cb
+                |-- inParams
+                |-- input
+                |-- operationHandle
+                |-- ret
+                `-- signature
+```
